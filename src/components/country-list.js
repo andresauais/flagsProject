@@ -1,6 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import Country from './country';
+import { useSelector, useDispatch } from 'react-redux';
+
+import FilterMenu from './filter-menu'
 
 const CountryListStyled = styled.div`
   display: grid;
@@ -10,21 +13,36 @@ const CountryListStyled = styled.div`
   padding: 4em 2em;
 `
 function CountryList(){
+  const dispatch = useDispatch();
 
-  const [countryList, setCountryList] = useState([]);
+  const countryListByName = useSelector((state)=> state.countryListByName);
+
+  const countryList = useSelector((state) => {
+    if('' !== state.filterByRegion){
+      return state.countryFilteredByRegion;
+    }
+    if(countryListByName.length > 0){
+      return countryListByName;
+    }
+    return state.countryList;
+  })
 
   useEffect(()=>{
     fetch('https://restcountries.eu/rest/v2/all')
     .then((response)=>{
       return response.json()
     })
-    .then((data)=>{
-      setCountryList(data);
+    .then((list)=>{
+      dispatch({
+        type: 'SET_COUNTRY_LIST',
+        payload: list
+      })
     })
     .catch((err)=>{
       console.log(err)
     })
   }, [])
+
   return(
     <CountryListStyled>
       {
