@@ -4,13 +4,17 @@ import Country from './country';
 import { useSelector, useDispatch } from 'react-redux';
 
 import FilterMenu from './filter-menu'
+import Wrapper from './wrapper';
 
 const CountryListStyled = styled.div`
   display: grid;
   grid-row-gap: 2.3em;
+  grid-auto-flow: columns;
+  grid-column-gap: 66px;
+  grid-template-columns: repeat(auto-fill, 270px);
   background: var(--background);
   justify-content: center;
-  padding: 4em 2em;
+  padding: 4em 0;
 `
 function CountryList(){
   const dispatch = useDispatch();
@@ -44,9 +48,10 @@ function CountryList(){
   }, [])
 
   return(
-    <CountryListStyled>
+    <Wrapper>
+      <CountryListStyled>
       {
-        countryList.map(({name, flag, population, region, capital})=>{
+        countryList.map(({ name, flag, population, capital, region, nativeName, cioc, alpha2Code }) => {
           return(
             <Country
               key={name}
@@ -55,11 +60,15 @@ function CountryList(){
               population={population}
               region={region}
               capital={capital}
+              nativeName={nativeName}
+              cioc={cioc}
+              alpha2Code={alpha2Code}
             />
           )
         })
       }
-    </CountryListStyled>
+      </CountryListStyled>
+    </Wrapper>
   )
 }
 
